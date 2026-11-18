@@ -8,6 +8,8 @@ Each space shows a tile, its name, its branch and one status mark. The tile is a
 
 Click a space to select it; right-click it for the space menu. Click an agent to focus it. Rest the pointer on a space for half a second to see its full name, also when the sidebar is collapsed.
 
+An agent's row and its pane header show the title the agent sets, which changes as it works. To give it a name that stays, double-click the pane header (or right-click the pane and pick Rename) and type it. The sidebar row and the header then show that name, on every Apollo window, until you clear it with an empty name. This needs Apollo 0.0.8 or later.
+
 ## Space menu
 
 Right-click a space to open its menu at the pointer. The top line is the space's name. Then:

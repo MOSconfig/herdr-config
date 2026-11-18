@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { recorder } from "./helpers/stubs.js";
-import { paneActions, paneHeader, hoverButtons } from "../mods/apollo-pane/lib.js";
+import { paneActions, paneHeader, hoverButtons, renamePane } from "../mods/apollo-pane/lib.js";
 
 const prog = (key, name, agent) => ({ key, name, icon: `icons/${key}.svg`, tint: true, tile: null, color: null, shell: !agent, agent });
 const PANES = [
@@ -48,4 +48,16 @@ test("paneHeader: a mod pane has no folder or branch; an unknown pane gives null
 test("hoverButtons: four entries only while hovered", () => {
   assert.deepEqual(hoverButtons(true), ["split-right", "split-down", "zoom", "close"]);
   assert.deepEqual(hoverButtons(false), []);
+});
+
+test("paneHeader: a pane's own name (pane.rename) wins over the title its agent sets", () => {
+  assert.equal(paneHeader("p2", [{ ...PANES[1], name: "login fix" }]).title, "login fix");
+  assert.equal(paneHeader("p2", [{ ...PANES[1], name: null }]).title, "Claude Code: fix login");
+  assert.equal(paneHeader("p3", [{ ...PANES[2], name: "specs" }]).title, "specs");
+});
+
+test("renamePane asks to name the header's own pane", () => {
+  const r = recorder();
+  renamePane("p2", r);
+  assert.deepEqual(r.calls.map(({ name, args }) => ({ name, args })), [{ name: "pane.rename", args: { pane: "p2" } }]);
 });

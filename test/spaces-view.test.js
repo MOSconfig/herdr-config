@@ -267,3 +267,11 @@ test("chevrons: only on spaces with agents; folded state carried for the glyph",
   assert.equal(ch("s2")[0].attrs.folded, false);
   assert.deepEqual(ch("devbox/s3"), [], "no agents → no chevron");
 });
+
+test("an agent row shows its pane's name (pane.rename) over the title its agent sets", () => {
+  const [first, ...rest] = sidebarAgents();
+  const rows = (agents) => findAll(spacesView({ spaces: sidebarSpaces(), agents }), (n) => n.kind === "agent");
+  const row = (agents) => rows(agents).find((n) => n.attrs.address === first.address).attrs.title;
+  assert.equal(row([{ ...first, pane_name: "login fix" }, ...rest]), "login fix");
+  assert.equal(row([{ ...first, pane_name: null }, ...rest]), first.title);
+});
