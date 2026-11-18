@@ -269,7 +269,7 @@ function mark(status, active) {
 function agentRow(a) {
   const m = mark(a.status, false);
   return node("agent", {
-    id: `agent-${a.address}`, address: a.address, title: a.title, focused: a.focused,
+    id: `agent-${a.address}`, address: a.address, title: a.pane_name || a.title, focused: a.focused,
     fill: a.focused ? "raised" : null, color: a.focused ? "foreground" : "muted",
     ...(({ icon, tint, color }) => ({ icon, tint, iconColor: color }))(agentIcon(a.program)),
   }, [...(a.pinned ? [node("pin", { color: "dim" })] : []), ...(m ? [m] : [])]);

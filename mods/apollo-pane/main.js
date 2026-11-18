@@ -2,7 +2,7 @@
 import { View, div, svg, image } from "gpui-kit";
 import { h_flex } from "gpui-base";
 import { panes, run, theme, props as herdrProps } from "herdr";
-import { paneActions, paneHeader, hoverButtons } from "./lib.js";
+import { paneActions, paneHeader, hoverButtons, renamePane } from "./lib.js";
 
 const FALLBACK = { foreground: "#cfbc97", muted: "#d5c4a1", dim: "#928374", raised: "#1c1f20", hover: "#32302f", border: "#3c3836",
   working: "#fabd2f", blocked: "#fb4934", done: "#b8bb26" };
@@ -25,7 +25,8 @@ export default class Pane extends View {
     const h = paneHeader(pane, panes());
     const acts = Object.fromEntries(paneActions(pane, { run }).map((a) => [a.id, a]));
     let row = h_flex().id("header").size_full().px(8).gap(6).items_center()
-      .on_hover((hovered, cx) => { this.hovered = hovered; cx.notify(); });
+      .on_hover((hovered, cx) => { this.hovered = hovered; cx.notify(); })
+      .on_mouse_down("left", (e) => { if (e.click_count === 2) renamePane(pane, { run }); });
     if (h?.icon) row = row.child((h.tint ? svg(h.icon).text_color(col(h.iconColor ?? "muted")) : image(h.icon)).size(14).flex_none());
     row = row.child(div().flex_1().min_w(0).text_size(13).font_light().text_color(col(h?.focused ? "foreground" : "muted")).truncate()
       .child(h?.title ?? ""));

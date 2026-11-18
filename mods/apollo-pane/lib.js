@@ -15,6 +15,9 @@ export function paneActions(pane, { run }) {
 
 export const hoverButtons = (hovered) => (hovered ? [...BUTTONS] : []);
 
+// Double-clicking the header asks for the pane's name (pane.rename; empty: unnamed again).
+export const renamePane = (pane, { run }) => run("pane.rename", { pane });
+
 const base = (path) => {
   const parts = String(path ?? "").replace(/\/+$/, "").split("/").filter(Boolean);
   return parts.length ? parts[parts.length - 1] : (path ? "/" : null);
@@ -28,7 +31,8 @@ export function paneHeader(paneId, panes) {
   return {
     pane: p.pane,
     ...(({ icon, tint, color }) => (isMod ? { icon: null, tint: false, iconColor: null } : { icon, tint, iconColor: color }))(agentIcon(p.program)),
-    title: p.title ?? "",
+    // A name someone gave the pane stays; the agent's own title changes with its work.
+    title: p.name || p.title || "",
     folder: isMod ? null : base(p.cwd),
     branch: isMod ? null : (p.branch ?? null),
     mark: kind ? { kind, color: p.status } : null,
