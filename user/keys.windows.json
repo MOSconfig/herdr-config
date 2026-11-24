@@ -96,7 +96,8 @@
     "ctrl-9": "space.select:9",
     "ctrl-shift-tab": "tab.prev",
     "ctrl-tab": "tab.next",
-    "f2": "tab.rename",
+    "f2": "pane.rename",
+    "alt-f2": "tab.rename",
     "shift-f2": "space.rename"
   },
   "terminal": {

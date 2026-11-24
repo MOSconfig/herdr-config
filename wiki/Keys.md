@@ -19,6 +19,7 @@
 | `cmd-shift-=` | zoom in |
 | `cmd-[` | unbound (copy mode in SonicTerm) |
 | `cmd-9` | last tab (`apollo-tabs.last`) |
+| `f2` | rename the pane (`pane.rename`); `alt-f2` renames the tab, `shift-f2` the space |
 
 Every other Herdr default stays. The `cmd-t`, `cmd-shift-t` and `cmd-n` keys above sit in a `layout:apollo` section, so they work this way only while the Apollo layout shows; in any other layout they are Herdr's own new tab and new space. `cmd-n` stays "new space": Herdr has no new-window command.
 

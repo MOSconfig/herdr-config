@@ -19,6 +19,7 @@
 | `cmd-shift-=` | 放大 |
 | `cmd-[` | 不绑定（在 SonicTerm 里是复制模式） |
 | `cmd-9` | 最后一个标签页（`apollo-tabs.last`） |
+| `f2` | 重命名窗格（`pane.rename`）；`alt-f2` 重命名标签页，`shift-f2` 重命名空间 |
 
 其他 Herdr 默认快捷键都保留。上面的 `cmd-t`、`cmd-shift-t` 和 `cmd-n` 放在 `layout:apollo` 部分，所以只在显示 Apollo 布局时这样工作；在其他布局里，它们是 Herdr 自己的新建标签页和新建空间。`cmd-n` 仍然是"新建空间"：Herdr 没有新建窗口的命令。
 
