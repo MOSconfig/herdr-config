@@ -28,7 +28,7 @@
 
 ## Windows
 
-`agent/herdr-context.ps1 <claude|copilot>` 是给 PowerShell 7（`pwsh`）用的同一个 hook。它输出同样的 JSON，不输出的情况和 9,000 字节的上限也都一样。因为 `herdr-app.exe` 是窗口程序，它会等进程结束后再读取 `herdr-app --skill` 的输出，并把 Windows 的换行（CRLF）转成 LF。
+`agent/herdr-context.ps1 <claude|copilot>` 是给 PowerShell 7（`pwsh`）用的同一个 hook。它输出同样的 JSON，上限也是 9,000 字节。在 Windows 上应用命令是 `apollo-app`（Apollo 的 Windows 压缩包只带 `apollo-app.exe`），所以它先找 `apollo-app`，再找 `herdr-app`，并在说明里写出找到的那个。两个都找不到时，以及上面其他情况下，它什么也不输出。因为应用是窗口程序，它会等进程结束后再读取应用 `--skill` 的输出，并把 Windows 的换行（CRLF）转成 LF。
 
 ```json
 { "hooks": { "SessionStart": [ { "hooks": [ { "type": "command", "command": "pwsh -NoProfile -File C:/path/to/herdr-config/agent/herdr-context.ps1 claude" } ] } ] } }

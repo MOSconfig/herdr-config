@@ -49,10 +49,10 @@ Copy-Item layouts\apollo.json, layouts\apollo.svg "$H\layouts\"
 Copy-Item themes\apollo.json "$H\themes\"
 Copy-Item -Recurse -Force mods\apollo-* "$H\mods\"
 Copy-Item user\keys.windows.json "$H\keys.json"
-herdr-app do layout.switch '{"name":"apollo"}'
+apollo-app do layout.switch --name apollo
 ```
 
-`herdr-app.exe` 是窗口程序：PowerShell 不会等它结束，也不显示它的输出。请在 Git Bash 里运行上面的 `herdr-app check` 循环。
+在 Windows 上命令是 `apollo-app`：Apollo 的 Windows 压缩包只带 `apollo-app.exe`。它是窗口程序：PowerShell 不会等它结束，也不显示它的输出。请在 Git Bash 里运行上面的检查循环，把 `herdr-app check` 换成 `apollo-app check`。
 
 Apollo 隐藏了系统标题栏，这时 Herdr 在 Windows 上不画窗口按钮。所以只要 `window().buttons` 为真（Windows 和 Linux），`apollo-tabs` 就在标签栏右端画出最小化、最大化和关闭按钮。窗口最大化时，最大化按钮显示还原图标。macOS 保留红绿灯按钮，不多画任何东西。
 
