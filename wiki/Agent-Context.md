@@ -28,7 +28,7 @@ It prints nothing and exits 0 when any of these is true:
 
 ## Windows
 
-`agent/herdr-context.ps1 <claude|copilot>` is the same hook for PowerShell 7 (`pwsh`). It prints the same JSON, has the same silent cases and the same 9,000-byte cap. It reads `herdr-app --skill` from a process it waits for, because `herdr-app.exe` is a window app, and turns Windows line ends (CRLF) into LF.
+`agent/herdr-context.ps1 <claude|copilot>` is the same hook for PowerShell 7 (`pwsh`). It prints the same JSON with the same 9,000-byte cap. On Windows the app command is `apollo-app` (Apollo's Windows zip ships only `apollo-app.exe`), so it looks for `apollo-app` first, then `herdr-app`, and names the one it found in the primer. It stays silent when neither is found, and in the other cases above. It reads the app's `--skill` from a process it waits for, because the app is a window app, and turns Windows line ends (CRLF) into LF.
 
 ```json
 { "hooks": { "SessionStart": [ { "hooks": [ { "type": "command", "command": "pwsh -NoProfile -File C:/path/to/herdr-config/agent/herdr-context.ps1 claude" } ] } ] } }

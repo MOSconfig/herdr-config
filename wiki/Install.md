@@ -49,10 +49,10 @@ Copy-Item layouts\apollo.json, layouts\apollo.svg "$H\layouts\"
 Copy-Item themes\apollo.json "$H\themes\"
 Copy-Item -Recurse -Force mods\apollo-* "$H\mods\"
 Copy-Item user\keys.windows.json "$H\keys.json"
-herdr-app do layout.switch '{"name":"apollo"}'
+apollo-app do layout.switch --name apollo
 ```
 
-`herdr-app.exe` is a window app: PowerShell doesn't wait for it or show its output. Run the `herdr-app check` loop above from Git Bash.
+On Windows the command is `apollo-app`: Apollo's Windows zip ships only `apollo-app.exe`. It is a window app: PowerShell doesn't wait for it or show its output. Run the check loop above from Git Bash, with `apollo-app check` in place of `herdr-app check`.
 
 Apollo hides the system title bar, and on Windows Herdr then draws no window buttons. So `apollo-tabs` draws minimize, maximize and close at the right end of the tab row, wherever `window().buttons` is true (Windows and Linux). Maximize shows a restore icon while the window is maximized. macOS keeps its traffic lights and draws nothing new.
 

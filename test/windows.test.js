@@ -185,8 +185,10 @@ const WIN = process.platform === "win32";
 const NASTY = "\x01\x1b\t\"\\é";
 
 // A PATH dir holding only the requested stubs. On Windows they are .cmd files; elsewhere sh scripts.
-function stubs(dir, { herdr = true, hc = true, xs = 8600 } = {}) {
+function stubs(dir, { herdr = true, apollo = false, hc = true, xs = 8600 } = {}) {
   const payload = join(dir, "skill.txt");
+  const apolloPayload = join(dir, "apollo-skill.txt");
+  writeFileSync(apolloPayload, "APOLLO-SKILL\n");
   writeFileSync(payload, `${NASTY}${"x".repeat(xs)}${"中".repeat(200)}${"😀".repeat(50)}\n`);
   const stub = (name, body) => {
     const f = join(dir, WIN ? `${name}.cmd` : name);
@@ -194,6 +196,7 @@ function stubs(dir, { herdr = true, hc = true, xs = 8600 } = {}) {
     if (!WIN) chmodSync(f, 0o755);
   };
   if (herdr) stub("herdr-app", WIN ? `if "%1"=="--skill" type "${payload}"` : `[ "$1" = --skill ] && exec /bin/cat '${payload}'\nexit 0`);
+  if (apollo) stub("apollo-app", WIN ? `if "%1"=="--skill" type "${apolloPayload}"` : `[ "$1" = --skill ] && exec /bin/cat '${apolloPayload}'\nexit 0`);
   if (hc) stub("hc", WIN ? "exit /b 0" : "exit 0");
   return dir;
 }
@@ -220,7 +223,7 @@ test("herdr-context.ps1 exists and mirrors the shell hook's rules", () => {
 test("herdr-context.ps1: silent outside Herdr, for other Claude entrypoints and unknown CLIs", { skip: !pwsh && "pwsh is not installed" }, () => {
   const cases = [
     ["no HC_TERMINAL_ID", hook("claude", { HC_TERMINAL_ID: "" })],
-    ["herdr-app missing", hook("claude", {}, { herdr: false })],
+    ["neither apollo-app nor herdr-app", hook("claude", {}, { herdr: false })],
     ["hc missing", hook("copilot", {}, { hc: false })],
     ["claude-desktop", hook("claude", { CLAUDE_CODE_ENTRYPOINT: "claude-desktop" })],
     ["claude sdk-ts", hook("claude", { CLAUDE_CODE_ENTRYPOINT: "sdk-ts" })],
@@ -254,4 +257,17 @@ test("herdr-context.ps1: claude (unset, cli, sdk-cli) and copilot shapes, capped
   assert.deepEqual(Object.keys(j), ["additionalContext"]);
   assert.ok(j.additionalContext.includes("tok-123"));
   assert.ok(c.bytes <= 9001);
+});
+
+test("herdr-context.ps1: Apollo's apollo-app is found first and named in the primer", { skip: !pwsh && "pwsh is not installed" }, () => {
+  for (const [name, opts] of [["only apollo-app", { herdr: false, apollo: true }], ["both", { herdr: true, apollo: true }]]) {
+    const r = hook("claude", {}, opts);
+    assert.equal(r.code, 0, `${name}: ${r.err}`);
+    const text = JSON.parse(r.out).hookSpecificOutput.additionalContext;
+    assert.ok(text.includes("Run `apollo-app --skill` before changing the window."), name);
+    assert.ok(!text.includes("herdr-app --skill"), name);
+    assert.ok(text.endsWith("APOLLO-SKILL"), `${name}: the skill text comes from apollo-app`);
+  }
+  const herdr = JSON.parse(hook("copilot", {}).out).additionalContext;
+  assert.ok(herdr.includes("Run `herdr-app --skill` before changing the window."), "herdr-app alone still works");
 });

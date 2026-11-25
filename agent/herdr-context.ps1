@@ -1,15 +1,21 @@
 # Prints Herdr context for claude|copilot SessionStart hooks; silent outside Herdr.
 # PowerShell port of agent/herdr-context.sh for Windows: the same text, silent cases and
-# 9,000-byte JSON cap, cut on a whole UTF-8 character. herdr-app.exe is a window app, so
-# its output is read from a redirected process that is waited for; Windows CRLF becomes LF.
+# 9,000-byte JSON cap, cut on a whole UTF-8 character. The app command is apollo-app (Apollo's
+# Windows zip ships only apollo-app.exe), else herdr-app; the primer names the one found. It is a
+# window app, so its output is read from a redirected process that is waited for; CRLF becomes LF.
 param([string]$Client = '')
 
 $ErrorActionPreference = 'Stop'
 try {
     if (-not $env:HC_TERMINAL_ID) { exit 0 }
-    $herdrApp = Get-Command herdr-app -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    $app = $null
+    foreach ($name in 'apollo-app', 'herdr-app') {
+        $app = Get-Command $name -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($app) { break }
+    }
     $hc = Get-Command hc -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
-    if (-not $herdrApp -or -not $hc) { exit 0 }
+    if (-not $app -or -not $hc) { exit 0 }
+    $appCommand = [IO.Path]::GetFileNameWithoutExtension($app.Name)
 
     if ($Client -ceq 'claude') {
         # Unset, cli or sdk-cli (claude -p in a terminal); the desktop app and SDKs stay silent.
@@ -25,14 +31,14 @@ try {
     }
 
     $primer = 'This is a Herdr terminal. Your address is ' + $env:HC_TERMINAL_ID +
-        '. Run `herdr-app --skill` before changing the window. Run `hc --skill` before starting or coordinating agents.'
+        '. Run `' + $appCommand + ' --skill` before changing the window. Run `hc --skill` before starting or coordinating agents.'
     if ($env:HERDR_CONTEXT_PROBE) { $primer += ' Probe: ' + $env:HERDR_CONTEXT_PROBE }
 
     $utf8 = New-Object Text.UTF8Encoding $false
     $skill = ''
     try {
         $start = New-Object Diagnostics.ProcessStartInfo
-        $start.FileName = $herdrApp.Source
+        $start.FileName = $app.Source
         $start.Arguments = '--skill'
         $start.UseShellExecute = $false
         $start.CreateNoWindow = $true

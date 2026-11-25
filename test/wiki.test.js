@@ -106,6 +106,19 @@ test("Panels: Files, Changes (staged/unstaged, limits), Specs (Work on it) and t
   for (const s of ["`staged`", "`unstaged`", "`#3d3f1b`", "`#4e231e`", "1500", "240 px", "220 px", "Work on it", "pointer"]) assert.ok(md.includes(s), s);
 });
 
+test("Windows sections use Apollo's apollo-app command", () => {
+  for (const page of ["Install", "Install-zh-CN"]) {
+    const win = section(read(page), "Windows");
+    assert.ok(win.includes("apollo-app do layout.switch --name apollo"), `${page}: layout switch`);
+    assert.ok(win.includes("`apollo-app check`") && win.includes("`apollo-app.exe`"), `${page}: check loop and exe`);
+    assert.ok(!/^herdr-app /m.test(win), `${page}: no herdr-app command line on Windows`);
+  }
+  for (const page of ["Agent-Context", "Agent-Context-zh-CN"]) {
+    const win = section(read(page), "Windows");
+    assert.ok(win.includes("`apollo-app`") && win.includes("`herdr-app`"), `${page}: apollo-app first, then herdr-app`);
+  }
+});
+
 test("Agent-Context: the hook script, both CLIs and when it is silent", () => {
   const md = read("Agent-Context");
   for (const s of ["`agent/herdr-context.sh <claude|copilot>`", "`HC_TERMINAL_ID`", "`CLAUDE_CODE_ENTRYPOINT`", "`herdr-app --skill`", "9,000"]) {
