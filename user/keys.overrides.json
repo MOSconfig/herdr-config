@@ -18,7 +18,9 @@
     "cmd-end": { "command": "terminal.scroll", "args": { "to": "bottom" } },
     "cmd-shift-=": "app.zoom_in",
     "cmd-[": null,
-    "cmd-9": "apollo-tabs.last"
+    "cmd-9": "apollo-tabs.last",
+    "f2": "pane.rename",
+    "alt-f2": "tab.rename"
   },
   "terminal": {
     "cmd-left": "tab.prev",

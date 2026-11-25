@@ -1,5 +1,6 @@
 {
   "global": {
+    "alt-f2": "tab.rename",
     "cmd-+": "app.zoom_in",
     "cmd-,": "app.settings",
     "cmd--": "app.zoom_out",
@@ -99,7 +100,7 @@
     "ctrl-9": "space.select:9",
     "ctrl-shift-tab": "tab.prev",
     "ctrl-tab": "tab.next",
-    "f2": "tab.rename",
+    "f2": "pane.rename",
     "shift-f2": "space.rename"
   },
   "layout:apollo": {

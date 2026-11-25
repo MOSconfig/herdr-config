@@ -45,6 +45,9 @@ const EXPECTED = {
       "cmd-end": scroll({ to: "bottom" }),
       "cmd-shift-=": "app.zoom_in",
       "cmd-9": "apollo-tabs.last",
+      // F2 renames the pane (Apollo #39); the tab moves to Alt+F2.
+      f2: "pane.rename",
+      "alt-f2": "tab.rename",
     },
     terminal: { "cmd-left": "tab.prev", "cmd-right": "tab.next" },
     // In the Apollo layout, new tabs and spaces go through apollo-tabs, which names them.
@@ -78,6 +81,15 @@ test("layout.switch moved from cmd-shift-l to cmd-alt-l; cmd-[ is unbound", () =
   assert.notEqual(keys.global["cmd-shift-l"], "layout.switch");
   assert.equal(keys.global["cmd-alt-l"], "layout.switch");
   assert.equal("cmd-[" in keys.global, false);
+});
+
+test("F2 renames the pane, Alt+F2 the tab, Shift+F2 the space (as Apollo ships)", () => {
+  for (const file of ["user/keys.json", "user/keys.windows.json"]) {
+    const g = read(file).global;
+    assert.equal(g.f2, "pane.rename", file);
+    assert.equal(g["alt-f2"], "tab.rename", file);
+    assert.equal(g["shift-f2"], "space.rename", file);
+  }
 });
 
 test("terminal cmd-left/right replace the ^A/^E sends", () => {
